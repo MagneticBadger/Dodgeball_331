@@ -1,6 +1,5 @@
-import java.awt.*;
 import javax.swing.*;
-import java.applet.Applet;
+import java.awt.*;
 import java.util.ArrayList;
 
 import static java.lang.System.currentTimeMillis;
@@ -13,9 +12,9 @@ public class GameMain extends JFrame {
     public int startTime, difficulty;
     public double currentTime, gameEndTime;				// done in seconds for checking, minutes:seconds for leaderboard menu
     public boolean isPaused, isEnded;
-    protected final int OPP_RADIUS = 100;
+    protected final int OPP_RADIUS = 25;
     public static Player player;
-    Ball[] balls;
+    ArrayList<Ball> balls = new ArrayList<Ball>();
     PowerUp[] powerUpArray;
 
 
@@ -31,6 +30,9 @@ public class GameMain extends JFrame {
 
         // set difficulty - handled in menu
         // if not, jdialog
+
+        setVisible(true);
+        run();
     }
 
 
@@ -63,18 +65,18 @@ public class GameMain extends JFrame {
 
         if (numberToAdd == 0) {
             // Top left block
-            balls[0] = new Ball(0+OPP_RADIUS, 0+OPP_RADIUS, OPP_RADIUS, 9.8, 9.8);
+            balls.add(new Ball(0 + OPP_RADIUS, 0 + OPP_RADIUS, OPP_RADIUS, 9.8, 9.8));
             // top right block
-            balls[1] = new Ball(getWidth()-OPP_RADIUS, 0+OPP_RADIUS, OPP_RADIUS, 9.8, -9.8);
+            balls.add(new Ball(getWidth() - OPP_RADIUS, 0 + OPP_RADIUS, OPP_RADIUS, 9.8, -9.8));
             // bottom left
-            balls[2] = new Ball(0+OPP_RADIUS, getHeight(), OPP_RADIUS, -9.8, 9.8);
+            balls.add(new Ball(0 + OPP_RADIUS, getHeight(), OPP_RADIUS, -9.8, 9.8));
             // bottom right
-            balls[3] = new Ball(getWidth()-OPP_RADIUS, getHeight()+OPP_RADIUS, OPP_RADIUS, -9.8, -9.8);
+            balls.add(new Ball(getWidth() - OPP_RADIUS, getHeight() + OPP_RADIUS, OPP_RADIUS, -9.8, -9.8));
 
         } else {
             // TODO Not working now - needs placement values
             for (int i = 0; i < numberToAdd; i++) {
-                balls[i] = new Ball(0, 0, 0, 0, 0);
+                balls.add(new Ball(0, 0, 0, 0, 0));
             }
         }
     }
@@ -91,8 +93,8 @@ public class GameMain extends JFrame {
         g2.drawImage(player.getImage(), player.x, player.y, this);
 
         //Draws the opponent balls
-        for (int i = 0; i < balls.length; i++)
-            balls[i].draw(g2);
+        for (Ball b : balls)
+            b.draw(g2);
 
         // TODO Draw power-ups
 
@@ -117,6 +119,11 @@ public class GameMain extends JFrame {
 //	public void run() {
 //
 //	}
+public void run() {
+    while (true) {
+        repaint();
+    }
+}
 
 
     public static void pause() {

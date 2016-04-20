@@ -6,7 +6,7 @@ import java.awt.event.*;
  * Created by suggs on 20/04/2016.
  */
 public class Player implements KeyListener, MouseMotionListener, MouseListener {
-    public int x, y, length, width, position, angle, powerUpTimeLeft;
+    public int x, y, position, angle, powerUpTimeLeft;
     public boolean rotatingLeft, rotatingRight, hasPowerUp, mouseDrag=false;
     public int[] xPoints, yPoints;
     private Image playerImage;
