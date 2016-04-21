@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -7,6 +8,7 @@ public class Ball {
     private int xVel, yVel;
     int radius;
     boolean active;
+    private Image ballImage;
 
     /**
      * Instantiates an opponent block.
@@ -14,6 +16,8 @@ public class Ball {
     public Ball(int x, int y, int radius, double xVel, double yVel) {
         this.radius = radius;
         active = false;
+        ImageIcon icon = new ImageIcon("dodgeball-sprite.png");
+        ballImage = icon.getImage();
     }
 
 
@@ -41,5 +45,8 @@ public class Ball {
      */
     public void draw(Graphics2D g2) {
 
+    }
+    public Image getImage() {
+        return ballImage;
     }
 }

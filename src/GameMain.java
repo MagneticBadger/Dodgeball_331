@@ -12,7 +12,7 @@ public class GameMain extends JFrame {
     public int startTime, difficulty;
     public double currentTime, gameEndTime;				// done in seconds for checking, minutes:seconds for leaderboard menu
     public boolean isPaused, isEnded;
-    protected final int OPP_RADIUS = 25;
+    protected final int OPP_RADIUS = 17;
     public static Player player;
     ArrayList<Ball> balls = new ArrayList<Ball>();
     PowerUp[] powerUpArray;
@@ -92,9 +92,6 @@ public class GameMain extends JFrame {
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
         g2.drawImage(player.getImage(), player.x, player.y, this);
 
-        //Draws the opponent balls
-        for (Ball b : balls)
-            b.draw(g2);
 
         // TODO Draw power-ups
 
