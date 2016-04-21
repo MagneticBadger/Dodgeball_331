@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- * Created by suggs on 20/04/2016.
+ * Created on 20/04/2016.
  */
 public class Player implements KeyListener, MouseMotionListener, MouseListener {
     public int x, y, position, angle, powerUpTimeLeft;
