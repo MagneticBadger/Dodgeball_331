@@ -7,10 +7,12 @@ import java.awt.event.*;
  */
 public class Player implements KeyListener, MouseMotionListener, MouseListener {
     public int x, y, position, angle, powerUpTimeLeft;
-    public boolean rotatingLeft, rotatingRight, hasPowerUp, mouseDrag=false;
     public int[] xPoints, yPoints;
-    private Image playerImage;
+    public boolean rotatingLeft, rotatingRight, hasPowerUp, mouseDrag=false;
+    ImageIcon icon = new ImageIcon("team2-goalie.png");
+    Image playerImage = icon.getImage();
 
+    public final int PLAYER_WIDTH = 100, PLAYER_HEIGHT = 100;
 
     /**
      * Create the Player the player moves - determines where to redraw the shape based on the
@@ -19,11 +21,9 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     public Player(int startingX, int startingY) {
         this.x = startingX;
         this.y = startingY;
-
-        ImageIcon icon = new ImageIcon("team2-goalie.png");
-        playerImage = icon.getImage();
         x = 100;
         y = 100;
+//        addMouseMotionListener(this);
         // x = ScreenHeight / 2
         // y = ScreenHeight / 2
     }
@@ -104,11 +104,14 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     @Override
     public void mouseDragged(MouseEvent e) {
         // TODO Dragging block motion
-        while(mouseDrag) {
+//        while(mouseDrag) {
             Point mouseLocation = e.getLocationOnScreen();
-            x = (int) mouseLocation.getX();
-            y = (int) mouseLocation.getY();
-        }
+        int dx = (int) mouseLocation.getX() - x;
+        int dy = (int) mouseLocation.getY() - y;
+
+        x += dx;
+        y += dy;
+//        }
 
     }
 

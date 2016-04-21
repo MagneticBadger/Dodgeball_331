@@ -14,6 +14,7 @@ public class GameMain extends JFrame {
     public boolean isPaused, isEnded;
     protected final int OPP_RADIUS = 25;
     public static Player player;
+    private Image screenBuffer;
     ArrayList<Ball> balls = new ArrayList<Ball>();
     PowerUp[] powerUpArray;
 
@@ -92,6 +93,9 @@ public class GameMain extends JFrame {
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
         g2.drawImage(player.getImage(), player.x, player.y, this);
 
+        g2.setColor(Color.BLACK);
+        g2.drawRect(player.x, player.y, player.PLAYER_WIDTH, player.PLAYER_HEIGHT);
+
         //Draws the opponent balls
         for (Ball b : balls)
             b.draw(g2);
@@ -136,7 +140,6 @@ public void run() {
      * @param args
      */
     public static void main(String[] args) {
-        new GameMain();
-
+        GameMain m = new GameMain();
     }
 }
