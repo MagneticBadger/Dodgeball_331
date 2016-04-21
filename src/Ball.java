@@ -21,6 +21,7 @@ public class Ball {
     }
 
 
+
     /**
      * Given the screen width and height, determines how and where to move the block next.
      * @param width of the screen
