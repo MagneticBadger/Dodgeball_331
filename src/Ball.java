@@ -5,7 +5,8 @@ import java.awt.*;
  * Created by suggs on 20/04/2016.
  */
 public class Ball {
-    private int xVel, yVel;
+    public int x, y;
+    private double xVel, yVel;
     int radius;
     boolean active;
     private Image ballImage;
@@ -14,10 +15,15 @@ public class Ball {
      * Instantiates an opponent block.
      */
     public Ball(int x, int y, int radius, double xVel, double yVel) {
+        this.x = x;
+        this.y = y;
         this.radius = radius;
+        this.xVel = xVel;
+        this.yVel = yVel;
         active = false;
         ImageIcon icon = new ImageIcon("dodgeball-sprite.png");
         ballImage = icon.getImage();
+
     }
 
 
@@ -28,7 +34,8 @@ public class Ball {
      * @param height of the screen
      */
     public void moveBall(int width, int height) {
-
+        x += xVel;
+        y += yVel;
     }
 
 

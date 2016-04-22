@@ -12,7 +12,7 @@ public class GameMain extends JFrame {
     public int startTime, difficulty;
     public double currentTime, gameEndTime;				// done in seconds for checking, minutes:seconds for leaderboard menu
     public boolean isPaused, isEnded;
-    protected final int OPP_RADIUS = 17;
+    protected final int OPP_RADIUS = 50;
     public static Player player;
     ArrayList<Ball> balls = new ArrayList<Ball>();
     PowerUp[] powerUpArray;
@@ -65,13 +65,13 @@ public class GameMain extends JFrame {
 
         if (numberToAdd == 0) {
             // Top left block
-            balls.add(new Ball(0 + OPP_RADIUS, 0 + OPP_RADIUS, OPP_RADIUS, 9.8, 9.8));
+            balls.add(new Ball(15, 0 + OPP_RADIUS, OPP_RADIUS, 9.8, 9.8));
             // top right block
             balls.add(new Ball(getWidth() - OPP_RADIUS, 0 + OPP_RADIUS, OPP_RADIUS, 9.8, -9.8));
             // bottom left
-            balls.add(new Ball(0 + OPP_RADIUS, getHeight(), OPP_RADIUS, -9.8, 9.8));
+            balls.add(new Ball(15, getHeight() - OPP_RADIUS, OPP_RADIUS, -9.8, 9.8));
             // bottom right
-            balls.add(new Ball(getWidth() - OPP_RADIUS, getHeight() + OPP_RADIUS, OPP_RADIUS, -9.8, -9.8));
+            balls.add(new Ball(getWidth() - OPP_RADIUS, getHeight() - OPP_RADIUS, OPP_RADIUS, -9.8, -9.8));
 
         } else {
             // TODO Not working now - needs placement values
@@ -92,12 +92,12 @@ public class GameMain extends JFrame {
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
         g2.drawImage(player.getImage(), player.x, player.y, this);
 
-
+        for(Ball b: balls){
+            g2.drawImage(b.getImage(),b.x,b.y,this);
+        }
         // TODO Draw power-ups
 
-        //player
-
-        g.drawString(Double.toString(currentTime), getWidth()/2, 100);
+        //g.drawString(Double.toString(currentTime), getWidth()/2, 100);
     }
 
 
