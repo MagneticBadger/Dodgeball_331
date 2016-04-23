@@ -11,10 +11,10 @@ import static java.lang.System.currentTimeMillis;
  */
 public class GameMain extends JFrame {
     Thread thread;
-    private int startTime, difficulty, fps = 30;
-    private long currentTime, gameEndTime, runTime;                // done in seconds for checking, minutes:seconds for leaderboard menu
+    private int  difficulty, fps = 30;
+    private long timeSinceLastFrame, startTime, currentTime, gameEndTime, runTime;                // done in seconds for checking, minutes:seconds for leaderboard menu
     private boolean isPaused, isEnded;
-    private final int OPP_RADIUS = 50;
+    private final int OPP_RADIUS = 17;
     private static Player player;
     private Image screenBuffer;
     private Graphics g;
@@ -48,8 +48,14 @@ public class GameMain extends JFrame {
      * @return
      */
     public void calculateTime() {
-        while(isPaused = false) {
-            currentTime = currentTimeMillis() - startTime;
+        if(isPaused == false) {
+            long currentTime = (currentTimeMillis() - startTime)/1000;
+            this.timeSinceLastFrame = currentTime - this.currentTime;
+            for (Ball b: balls){
+                b.bouncingTime -= timeSinceLastFrame;
+
+            }
+            this.currentTime = currentTime;
         }
     }
 
@@ -70,13 +76,13 @@ public class GameMain extends JFrame {
 
         if (numberToAdd == 0) {
             // Top left block
-            balls.add(new Ball(15, 0 + OPP_RADIUS, OPP_RADIUS, 9.8, 9.8));
+            balls.add(new Ball(0 + OPP_RADIUS, 0 + OPP_RADIUS, OPP_RADIUS, 50.8, 32.8));
             // top right block
-            balls.add(new Ball(getWidth() - OPP_RADIUS, 0 + OPP_RADIUS, OPP_RADIUS, 9.8, -9.8));
+            balls.add(new Ball(getWidth() - OPP_RADIUS, 0 + OPP_RADIUS, OPP_RADIUS, -20.8, 19.8));
             // bottom left
-            balls.add(new Ball(15, getHeight() - OPP_RADIUS, OPP_RADIUS, -9.8, 9.8));
+            balls.add(new Ball(15, getHeight() - OPP_RADIUS, OPP_RADIUS, 1.8, -23.8));
             // bottom right
-            balls.add(new Ball(getWidth() - OPP_RADIUS, getHeight() - OPP_RADIUS, OPP_RADIUS, -9.8, -9.8));
+            balls.add(new Ball(getWidth() - OPP_RADIUS, getHeight() - OPP_RADIUS, OPP_RADIUS, -1.8, -34.8));
 
         } else {
             // TODO Not working now - needs placement values
@@ -101,6 +107,9 @@ public class GameMain extends JFrame {
             g2.drawImage(b.getImage(),b.x,b.y,this);
         }
         // TODO Draw power-ups
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("TimesRoman", Font.BOLD, 50));
+        g.drawString(Double.toString(currentTime), (getWidth()/2) - 50, 100);
 
         BufferedImage bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         g2.drawImage(bufferedImage, null, 0, 0);
@@ -123,8 +132,14 @@ public class GameMain extends JFrame {
     //
     //	}
     private void run() {
+        startTime = currentTimeMillis();
         while (true) {
             repaint();
+
+            for(Ball b: balls){
+                b.move(getWidth(),getHeight(), timeSinceLastFrame);
+            }
+            calculateTime();
 
             try {
                 runTime = System.currentTimeMillis();

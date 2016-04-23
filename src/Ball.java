@@ -6,6 +6,7 @@ import java.awt.*;
  */
 public class Ball {
     public int x, y;
+    public double bouncingTime;
     private double xVel, yVel;
     int radius;
     boolean active;
@@ -33,9 +34,23 @@ public class Ball {
      * @param width of the screen
      * @param height of the screen
      */
-    public void moveBall(int width, int height) {
-        x += xVel;
-        y += yVel;
+    public void move(int width, int height, long timeSinceLastFrame) {
+
+        x += xVel * timeSinceLastFrame;
+        y += yVel * timeSinceLastFrame;
+
+        if (bouncingTime < 0) {
+            if (x < 1 | x > width) {
+                //System.out.println(x);
+                xVel = xVel * -1;
+                bouncingTime = 1;
+            }
+            if (y < 1 | y > height) {
+                yVel = yVel * -1;
+                bouncingTime = 1;
+            }
+        }
+
     }
 
 
