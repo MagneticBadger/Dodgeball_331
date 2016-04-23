@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static java.lang.System.currentTimeMillis;
@@ -9,13 +10,17 @@ import static java.lang.System.currentTimeMillis;
  * Created by suggs on 20/04/2016.
  */
 public class GameMain extends JFrame {
-    public int startTime, difficulty;
-    public double currentTime, gameEndTime;				// done in seconds for checking, minutes:seconds for leaderboard menu
-    public boolean isPaused, isEnded;
-    protected final int OPP_RADIUS = 50;
-    public static Player player;
+    Thread thread;
+    private int startTime, difficulty, fps = 30;
+    private long currentTime, gameEndTime, runTime;                // done in seconds for checking, minutes:seconds for leaderboard menu
+    private boolean isPaused, isEnded;
+    private final int OPP_RADIUS = 50;
+    private static Player player;
+    private Image screenBuffer;
+    private Graphics g;
     ArrayList<Ball> balls = new ArrayList<Ball>();
     PowerUp[] powerUpArray;
+//    JPanel panel = new JPanel(new BorderLayout(), true);
 
 
 
@@ -23,14 +28,15 @@ public class GameMain extends JFrame {
      * Initialize all variables for instance of the game.
      */
     public GameMain() {
-        setSize(1600, 900);
+        setSize(750, 750);
         player = new Player(getWidth()/2, getHeight()/2);
         generateOpponents(0);
         // init power ups
 
         // set difficulty - handled in menu
         // if not, jdialog
-
+        thread = new Thread();
+        thread.start();
         setVisible(true);
         run();
     }
@@ -43,8 +49,7 @@ public class GameMain extends JFrame {
      */
     public void calculateTime() {
         while(isPaused = false) {
-            double currentTime = currentTimeMillis() - startTime;
-            this.currentTime = currentTime;
+            currentTime = currentTimeMillis() - startTime;
         }
     }
 
@@ -61,7 +66,7 @@ public class GameMain extends JFrame {
      * the oppX and oppY fields.
      * @param numberToAdd
      */
-    public void generateOpponents(int numberToAdd) {
+    private void generateOpponents(int numberToAdd) {
 
         if (numberToAdd == 0) {
             // Top left block
@@ -88,8 +93,8 @@ public class GameMain extends JFrame {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g.setColor(new Color(255,165,79));
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g2.setColor(new Color(255, 165, 79));
+        g2.fillRect(0, 0, this.getWidth(), this.getHeight());
         g2.drawImage(player.getImage(), player.x, player.y, this);
 
         for(Ball b: balls){
@@ -97,7 +102,8 @@ public class GameMain extends JFrame {
         }
         // TODO Draw power-ups
 
-        //g.drawString(Double.toString(currentTime), getWidth()/2, 100);
+        BufferedImage bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+        g2.drawImage(bufferedImage, null, 0, 0);
     }
 
 
@@ -110,17 +116,28 @@ public class GameMain extends JFrame {
     }
 
 
-//	/**
-//	 * Runs the game.
-//	 */
-//	public void run() {
-//
-//	}
-public void run() {
-    while (true) {
-        repaint();
+    //	/**
+    //	 * Runs the game.
+    //	 */
+    //	public void run() {
+    //
+    //	}
+    private void run() {
+        while (true) {
+            repaint();
+
+            try {
+                runTime = System.currentTimeMillis();
+
+                // prevents sleeping for a negative amount of time
+                if (fps - (runTime - startTime) > 0)
+                    Thread.sleep(fps - (runTime - startTime));
+
+            } catch (InterruptedException e) {
+            }
+
+        }
     }
-}
 
 
     public static void pause() {
