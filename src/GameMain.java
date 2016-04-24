@@ -1,4 +1,4 @@
-import javax.swing.*;
+import java.applet.Applet;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -9,14 +9,14 @@ import static java.lang.System.currentTimeMillis;
 /**
  * Created by suggs on 20/04/2016.
  */
-public class GameMain extends JFrame {
+public class GameMain extends Applet implements Runnable {
     Thread thread;
     private int  difficulty, fps = 30;
     private long timeSinceLastFrame, startTime, currentTime, gameEndTime, runTime;                // done in seconds for checking, minutes:seconds for leaderboard menu
     private boolean isPaused, isEnded;
     private final int OPP_RADIUS = 17;
     private static Player player;
-    private Image screenBuffer;
+    BufferedImage screenBuffer;
     private Graphics g;
     ArrayList<Ball> balls = new ArrayList<Ball>();
     PowerUp[] powerUpArray;
@@ -27,18 +27,23 @@ public class GameMain extends JFrame {
     /**
      * Initialize all variables for instance of the game.
      */
-    public GameMain() {
-        setSize(750, 750);
+    @Override
+    public void init() {
+        this.resize(750, 750);
         player = new Player(getWidth()/2, getHeight()/2);
         generateOpponents(0);
         // init power ups
 
         // set difficulty - handled in menu
         // if not, jdialog
+
+//        setVisible(true);
+//        screenBuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+//        run();
+
+
         thread = new Thread();
         thread.start();
-        setVisible(true);
-        run();
     }
 
 
@@ -99,9 +104,9 @@ public class GameMain extends JFrame {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(new Color(255, 165, 79));
-        g2.fillRect(0, 0, this.getWidth(), this.getHeight());
-        g2.drawImage(player.getImage(), player.x, player.y, this);
+        g.setColor(new Color(255, 165, 79));
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g.drawImage(player.getImage(), player.x, player.y, this);
 
         for(Ball b: balls){
             g2.drawImage(b.getImage(),b.x,b.y,this);
@@ -111,8 +116,14 @@ public class GameMain extends JFrame {
         g.setFont(new Font("TimesRoman", Font.BOLD, 50));
         g.drawString(Double.toString(currentTime), (getWidth()/2) - 50, 100);
 
-        BufferedImage bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-        g2.drawImage(bufferedImage, null, 0, 0);
+
+        screenBuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+        g2.drawImage(screenBuffer, null, 0, 0);
+
+//        screenBuffer = createImage((int) getSize().getWidth(), (int) getSize().getHeight());
+//        g = screenBuffer.getGraphics();
+//        g.drawImage(screenBuffer, 0, 0, this);
+//        g2.drawImage(screenBuffer, null, 0, 0);
     }
 
 
@@ -131,25 +142,26 @@ public class GameMain extends JFrame {
     //	public void run() {
     //
     //	}
-    private void run() {
+    public void run() {
         startTime = currentTimeMillis();
         while (true) {
-            repaint();
 
             for(Ball b: balls){
                 b.move(getWidth(),getHeight(), timeSinceLastFrame);
             }
-            calculateTime();
+//            calculateTime();
 
-            try {
-                runTime = System.currentTimeMillis();
+            repaint();
 
-                // prevents sleeping for a negative amount of time
-                if (fps - (runTime - startTime) > 0)
-                    Thread.sleep(fps - (runTime - startTime));
-
-            } catch (InterruptedException e) {
-            }
+//            try {
+//                runTime = System.currentTimeMillis();
+//
+//                // prevents sleeping for a negative amount of time
+//                if (fps - (runTime - startTime) > 0)
+//                    Thread.sleep(fps - (runTime - startTime));
+//
+//            } catch (InterruptedException e) {
+//            }
 
         }
     }
@@ -159,13 +171,13 @@ public class GameMain extends JFrame {
         // TODO go through all objects and set active -> true/false
     }
 
-
-    /**
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-        new GameMain();
-
-    }
+//
+//    /**
+//     *
+//     * @param args
+//     */
+//    public static void main(String[] args) {
+//        new GameMain();
+//
+//    }
 }

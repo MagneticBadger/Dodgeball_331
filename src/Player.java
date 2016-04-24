@@ -24,8 +24,8 @@ public class Player {
 
         ImageIcon icon = new ImageIcon("team2-goalie.png");
         playerImage = icon.getImage();
-        x = 100;
-        y = 100;
+//        x = 100;
+//        y = 100;
 
         // x = ScreenHeight / 2
         // y = ScreenHeight / 2
