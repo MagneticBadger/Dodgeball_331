@@ -35,7 +35,7 @@ public class GameMain extends JFrame implements KeyListener {
      * Initialize all variables for instance of the game.
      */
     public GameMain() {
-        setSize(750, 750);
+        setSize(600, 600);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         player = new Player(getWidth()/2, getHeight()/2);
         addMouseListener(new MyMouseAdapter());
@@ -105,16 +105,16 @@ public class GameMain extends JFrame implements KeyListener {
 
         if (numberToAdd == 4) {
             // Top left block
-            balls.add(new Ball(20 + OPP_RADIUS, 20 + OPP_RADIUS, OPP_RADIUS,
+            balls.add(new Ball(50 + OPP_RADIUS, 50 + OPP_RADIUS, OPP_RADIUS,
                     minVelocity + Math.random() * (maxVelocity - minVelocity), minVelocity + Math.random() * (maxVelocity - minVelocity)));
             // top right block
-            balls.add(new Ball(getWidth() - OPP_RADIUS, 20 + OPP_RADIUS, OPP_RADIUS,
+            balls.add(new Ball(getWidth() - 50 - OPP_RADIUS, 50 + OPP_RADIUS, OPP_RADIUS,
                     -(minVelocity + Math.random() * (maxVelocity - minVelocity)), minVelocity + Math.random() * (maxVelocity - minVelocity)));
             // bottom left
-            balls.add(new Ball(20, getHeight() - OPP_RADIUS, OPP_RADIUS + 20,
+            balls.add(new Ball(50 + OPP_RADIUS, getHeight() - 50 - OPP_RADIUS, OPP_RADIUS + 50,
                     minVelocity + Math.random() * (maxVelocity - minVelocity), -(minVelocity + Math.random() * (maxVelocity - minVelocity))));
             // bottom right
-            balls.add(new Ball(getWidth() - OPP_RADIUS - 20, getHeight() - OPP_RADIUS - 20, OPP_RADIUS,
+            balls.add(new Ball(getWidth() - OPP_RADIUS - 50, getHeight() - OPP_RADIUS - 50, OPP_RADIUS,
                     -(minVelocity + Math.random() * (maxVelocity - minVelocity)), -(minVelocity + Math.random() * (maxVelocity - minVelocity))));
 
         } else if(numberToAdd == 6) {
@@ -212,9 +212,8 @@ public class GameMain extends JFrame implements KeyListener {
                 for (Ball b : balls) {
                     b.move(getWidth(), getHeight());
                 }
-                checkCollision();
                 repaint();
-
+                checkCollision();
             }
 
             calculateTime();
