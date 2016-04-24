@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static java.lang.System.currentTimeMillis;
+import static java.lang.System.nanoTime;
 
 
 /**
@@ -11,6 +12,7 @@ import static java.lang.System.currentTimeMillis;
  */
 public class GameMain extends JFrame {
     Thread thread;
+    private final long framePeriod = 1000000000 / 30;
     private int  difficulty, fps = 30;
     private double timeSinceLastFrame, startTime, currentTime;
     private long gameEndTime, runTime;                // done in seconds for checking, minutes:seconds for leaderboard menu
@@ -30,6 +32,7 @@ public class GameMain extends JFrame {
      */
     public GameMain() {
         setSize(750, 750);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         player = new Player(getWidth()/2, getHeight()/2);
         generateOpponents(4);
         // init power ups
@@ -51,10 +54,10 @@ public class GameMain extends JFrame {
     public void calculateTime() {
         if(isPaused == false) {
             double currentTime = (currentTimeMillis() - startTime)/1000;
-            this.timeSinceLastFrame = currentTime - this.currentTime;
-            for (Ball b: balls){
-                b.bouncingTime -= timeSinceLastFrame;
-            }
+//            this.timeSinceLastFrame = currentTime - this.currentTime;
+//            for (Ball b: balls){
+//                b.bouncingTime -= timeSinceLastFrame;
+//            }
             this.currentTime = currentTime;
         }
     }
@@ -136,24 +139,29 @@ public class GameMain extends JFrame {
     //
     //	}
     private void run() {
-        startTime = currentTimeMillis();
-        while (true) {
-            repaint();
+        long lastUpdateTime = nanoTime();
+        while (!isEnded) {
 
-            for(Ball b: balls){
-                b.move(getWidth(),getHeight(), timeSinceLastFrame);
+            if (nanoTime() - lastUpdateTime >= framePeriod) {
+                lastUpdateTime = nanoTime();
+                for (Ball b : balls) {
+                    b.move(getWidth(), getHeight(), timeSinceLastFrame);
+                }
+                repaint();
+
             }
+
             calculateTime();
 
-            //try {
-            //    runTime = System.currentTimeMillis();
+            try {
+                runTime = System.currentTimeMillis();
 
-                // prevents sleeping for a negative amount of time
-            //    if (fps - (runTime - startTime) > 0)
-            //        Thread.sleep(fps - (runTime - startTime));
+//              prevents sleeping for a negative amount of time
+                if (fps - (runTime - startTime) > 0)
+                    Thread.sleep((long) fps - (long) (runTime - startTime));
 
-            //} catch (InterruptedException e) {
-            //}
+            } catch (InterruptedException e) {
+            }
 
         }
     }

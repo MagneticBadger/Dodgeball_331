@@ -36,8 +36,8 @@ public class Ball {
      */
     public void move(int width, int height, double timeSinceLastFrame) {
 
-        x += xVel* timeSinceLastFrame;
-        y += yVel* timeSinceLastFrame;
+        x += xVel;
+        y += yVel;
 
         if (bouncingTime < 0) {
             if (x < 1 | x > width) {
