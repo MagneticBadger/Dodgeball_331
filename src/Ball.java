@@ -34,10 +34,10 @@ public class Ball {
      * @param width of the screen
      * @param height of the screen
      */
-    public void move(int width, int height, long timeSinceLastFrame) {
+    public void move(int width, int height, double timeSinceLastFrame) {
 
-        x += xVel * timeSinceLastFrame;
-        y += yVel * timeSinceLastFrame;
+        x += xVel* timeSinceLastFrame;
+        y += yVel* timeSinceLastFrame;
 
         if (bouncingTime < 0) {
             if (x < 1 | x > width) {

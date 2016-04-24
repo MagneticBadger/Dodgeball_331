@@ -12,7 +12,8 @@ import static java.lang.System.currentTimeMillis;
 public class GameMain extends JFrame {
     Thread thread;
     private int  difficulty, fps = 30;
-    private long timeSinceLastFrame, startTime, currentTime, gameEndTime, runTime;                // done in seconds for checking, minutes:seconds for leaderboard menu
+    private double timeSinceLastFrame, startTime, currentTime;
+    private long gameEndTime, runTime;                // done in seconds for checking, minutes:seconds for leaderboard menu
     private boolean isPaused, isEnded;
     private final int OPP_RADIUS = 17;
     private static Player player;
@@ -30,7 +31,7 @@ public class GameMain extends JFrame {
     public GameMain() {
         setSize(750, 750);
         player = new Player(getWidth()/2, getHeight()/2);
-        generateOpponents(0);
+        generateOpponents(4);
         // init power ups
 
         // set difficulty - handled in menu
@@ -49,11 +50,10 @@ public class GameMain extends JFrame {
      */
     public void calculateTime() {
         if(isPaused == false) {
-            long currentTime = (currentTimeMillis() - startTime)/1000;
+            double currentTime = (currentTimeMillis() - startTime)/1000;
             this.timeSinceLastFrame = currentTime - this.currentTime;
             for (Ball b: balls){
                 b.bouncingTime -= timeSinceLastFrame;
-
             }
             this.currentTime = currentTime;
         }
@@ -74,7 +74,17 @@ public class GameMain extends JFrame {
      */
     private void generateOpponents(int numberToAdd) {
 
-        if (numberToAdd == 0) {
+        if (numberToAdd == 4) {
+            // Top left block
+            balls.add(new Ball(20 + OPP_RADIUS, 20 + OPP_RADIUS, OPP_RADIUS, 5, 5));
+            // top right block
+            balls.add(new Ball(getWidth() - OPP_RADIUS, 20 + OPP_RADIUS, OPP_RADIUS, -7, 12));
+            // bottom left
+            balls.add(new Ball(20, getHeight() - OPP_RADIUS, OPP_RADIUS + 20, 1.8, -5));
+            // bottom right
+            balls.add(new Ball(getWidth() - OPP_RADIUS - 20, getHeight() - OPP_RADIUS - 20, OPP_RADIUS, -1.8, -4.8));
+
+        } else if(numberToAdd == 6) {
             // Top left block
             balls.add(new Ball(0 + OPP_RADIUS, 0 + OPP_RADIUS, OPP_RADIUS, 50.8, 32.8));
             // top right block
@@ -83,12 +93,6 @@ public class GameMain extends JFrame {
             balls.add(new Ball(15, getHeight() - OPP_RADIUS, OPP_RADIUS, 1.8, -23.8));
             // bottom right
             balls.add(new Ball(getWidth() - OPP_RADIUS, getHeight() - OPP_RADIUS, OPP_RADIUS, -1.8, -34.8));
-
-        } else {
-            // TODO Not working now - needs placement values
-            for (int i = 0; i < numberToAdd; i++) {
-                balls.add(new Ball(0, 0, 0, 0, 0));
-            }
         }
     }
 
@@ -141,15 +145,15 @@ public class GameMain extends JFrame {
             }
             calculateTime();
 
-            try {
-                runTime = System.currentTimeMillis();
+            //try {
+            //    runTime = System.currentTimeMillis();
 
                 // prevents sleeping for a negative amount of time
-                if (fps - (runTime - startTime) > 0)
-                    Thread.sleep(fps - (runTime - startTime));
+            //    if (fps - (runTime - startTime) > 0)
+            //        Thread.sleep(fps - (runTime - startTime));
 
-            } catch (InterruptedException e) {
-            }
+            //} catch (InterruptedException e) {
+            //}
 
         }
     }
