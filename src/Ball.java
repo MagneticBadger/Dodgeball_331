@@ -1,20 +1,32 @@
+import javax.swing.*;
 import java.awt.*;
 
 /**
  * Created by suggs on 20/04/2016.
  */
 public class Ball {
-    private int xVel, yVel;
+    public int x, y;
+    public double bouncingTime;
+    private double xVel, yVel;
     int radius;
     boolean active;
+    private Image ballImage;
 
     /**
      * Instantiates an opponent block.
      */
     public Ball(int x, int y, int radius, double xVel, double yVel) {
+        this.x = x;
+        this.y = y;
         this.radius = radius;
+        this.xVel = xVel;
+        this.yVel = yVel;
         active = false;
+        ImageIcon icon = new ImageIcon("dodgeball-sprite.png");
+        ballImage = icon.getImage();
+
     }
+
 
 
     /**
@@ -22,7 +34,22 @@ public class Ball {
      * @param width of the screen
      * @param height of the screen
      */
-    public void moveBall(int width, int height) {
+    public void move(int width, int height, long timeSinceLastFrame) {
+
+        x += xVel * timeSinceLastFrame;
+        y += yVel * timeSinceLastFrame;
+
+        if (bouncingTime < 0) {
+            if (x < 1 | x > width) {
+                //System.out.println(x);
+                xVel = xVel * -1;
+                bouncingTime = 1;
+            }
+            if (y < 1 | y > height) {
+                yVel = yVel * -1;
+                bouncingTime = 1;
+            }
+        }
 
     }
 
@@ -41,5 +68,8 @@ public class Ball {
      */
     public void draw(Graphics2D g2) {
 
+    }
+    public Image getImage() {
+        return ballImage;
     }
 }

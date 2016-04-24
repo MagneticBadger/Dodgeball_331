@@ -1,18 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created on 20/04/2016.
  */
-public class Player implements KeyListener, MouseMotionListener, MouseListener {
+public class Player {
     public int x, y, position, angle, powerUpTimeLeft;
-    public int[] xPoints, yPoints;
     public boolean rotatingLeft, rotatingRight, hasPowerUp, mouseDrag=false;
-    ImageIcon icon = new ImageIcon("team2-goalie.png");
-    Image playerImage = icon.getImage();
+    public int[] xPoints, yPoints;
+    Rectangle collisionBox;
+    private Image playerImage;
 
-    public final int PLAYER_WIDTH = 100, PLAYER_HEIGHT = 100;
 
     /**
      * Create the Player the player moves - determines where to redraw the shape based on the
@@ -21,9 +21,12 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     public Player(int startingX, int startingY) {
         this.x = startingX;
         this.y = startingY;
+
+        ImageIcon icon = new ImageIcon("team2-goalie.png");
+        playerImage = icon.getImage();
         x = 100;
         y = 100;
-//        addMouseMotionListener(this);
+
         // x = ScreenHeight / 2
         // y = ScreenHeight / 2
     }
@@ -52,6 +55,9 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
 
 
     public void draw(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        collisionBox = new Rectangle(0, 0, 100, 100);
+        g2.draw(collisionBox);
 
     }
 
@@ -65,120 +71,156 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         return playerImage;
     }
 
-    // KEY LISTENER METHODS BEGIN HERE
-    /**
-     * When a key is pressed (A/D or the left or right arrow), begins decreasing or increasing the
-     * rotation variable for the block.
-     */
-    @Override
-    public void keyPressed(KeyEvent e) {
-        // TODO Auto-generated method stub
+
+    public class MyMouseAdapter extends MouseAdapter {
+        private int mouseX, mouseY;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            mouseX = e.getX();
+            mouseY = e.getY();
+        }
+
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            int dx = e.getX() - mouseX;
+            int dy = e.getY() - mouseY;
+
+            if (collisionBox.getBounds2D().contains(x, y)) {
+                collisionBox.x += dx;
+                collisionBox.y += dy;
+                x += dy;
+                y += dy;
+            }
+            x += dx;
+            y += dy;
+        }
+
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+
+        public void locationUpdate(MouseEvent e) {
+
+        }
 
     }
 
-
-    /**
-     * When the key is released, sets the rotational boolean to false and stops rotation - the
-     * current angle is kept.
-     */
-    @Override
-    public void keyReleased(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-
-    /**
-     * Used for entering name in leaderboard.
-     */
-    @Override
-    public void keyTyped(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-
-    /**
-     * Handles motion of the Player.
-     */
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        // TODO Dragging block motion
+//    // KEY LISTENER METHODS BEGIN HERE
+//    /**
+//     * When a key is pressed (A/D or the left or right arrow), begins decreasing or increasing the
+//     * rotation variable for the block.
+//     */
+//    @Override
+//    public void keyPressed(KeyEvent e) {
+//        // TODO Auto-generated method stub
+//
+//    }
+//
+//
+//    /**
+//     * When the key is released, sets the rotational boolean to false and stops rotation - the
+//     * current angle is kept.
+//     */
+//    @Override
+//    public void keyReleased(KeyEvent arg0) {
+//        // TODO Auto-generated method stub
+//
+//    }
+//
+//
+//    /**
+//     * Used for entering name in leaderboard.
+//     */
+//    @Override
+//    public void keyTyped(KeyEvent arg0) {
+//        // TODO Auto-generated method stub
+//
+//    }
+//
+//
+//    /**
+//     * Handles motion of the Player.
+//     */
+//    @Override
+//    public void mouseDragged(MouseEvent e) {
+//        // TODO Dragging block motion
 //        while(mouseDrag) {
-            Point mouseLocation = e.getLocationOnScreen();
-        int dx = (int) mouseLocation.getX() - x;
-        int dy = (int) mouseLocation.getY() - y;
-
-        x += dx;
-        y += dy;
+//            Point mouseLocation = e.getLocationOnScreen();
+//            x = (int) mouseLocation.getX();
+//            y = (int) mouseLocation.getY();
 //        }
-
-    }
-
-
-    /**
-     * Unpauses the game when the user presses and holds the mouse button.
-     * Two options (option menu?): pauses when the mouse button is released or
-     * continues and doesn't pause when the mouse is released.
-     */
-    @Override
-    public void mousePressed(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-        mouseDrag = true;
-    }
-
-
-    /**
-     * Game is paused (a la SuperHot)
-     */
-    @Override
-    public void mouseReleased(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-        mouseDrag = false;
-    }
-
-
-
-    /**
-     * Unused.
-     */
-    @Override
-    public void mouseMoved(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-
-
-    /**
-     * Unused.
-     */
-    @Override
-    public void mouseClicked(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-
-
-    /**
-     * Unused.
-     */
-    @Override
-    public void mouseEntered(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-
-
-    /**
-     * Unused.
-     */
-    @Override
-    public void mouseExited(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
+//
+//    }
+//
+//
+//    /**
+//     * Unpauses the game when the user presses and holds the mouse button.
+//     * Two options (option menu?): pauses when the mouse button is released or
+//     * continues and doesn't pause when the mouse is released.
+//     */
+//    @Override
+//    public void mousePressed(MouseEvent arg0) {
+//        // TODO Auto-generated method stub
+//        mouseDrag = true;
+//    }
+//
+//
+//    /**
+//     * Game is paused (a la SuperHot)
+//     */
+//    @Override
+//    public void mouseReleased(MouseEvent arg0) {
+//        // TODO Auto-generated method stub
+//        mouseDrag = false;
+//    }
+//
+//
+//
+//    /**
+//     * Unused.
+//     */
+//    @Override
+//    public void mouseMoved(MouseEvent arg0) {
+//        // TODO Auto-generated method stub
+//
+//    }
+//
+//
+//
+//    /**
+//     * Unused.
+//     */
+//    @Override
+//    public void mouseClicked(MouseEvent arg0) {
+//        // TODO Auto-generated method stub
+//
+//    }
+//
+//
+//
+//    /**
+//     * Unused.
+//     */
+//    @Override
+//    public void mouseEntered(MouseEvent arg0) {
+//        // TODO Auto-generated method stub
+//
+//    }
+//
+//
+//
+//    /**
+//     * Unused.
+//     */
+//    @Override
+//    public void mouseExited(MouseEvent arg0) {
+//        // TODO Auto-generated method stub
+//
+//    }
 
 }
