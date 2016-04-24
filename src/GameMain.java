@@ -1,5 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -10,7 +14,7 @@ import static java.lang.System.nanoTime;
 /**
  * Created by suggs on 20/04/2016.
  */
-public class GameMain extends JFrame {
+public class GameMain extends JFrame implements KeyListener {
     Thread thread;
     private final long framePeriod = 1000000000 / 30;
     private int  difficulty = 0, fps = 30;
@@ -34,6 +38,9 @@ public class GameMain extends JFrame {
         setSize(750, 750);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         player = new Player(getWidth()/2, getHeight()/2);
+        addMouseListener(new MyMouseAdapter());
+        addMouseMotionListener(new MyMouseAdapter());
+        addKeyListener(this);
 
         // init power ups
 
@@ -139,6 +146,16 @@ public class GameMain extends JFrame {
     }
 
 
+    public void checkCollision() {
+        for (Ball b : balls) {
+            if (player.collisionBox.intersects(b.collisionBox)) {
+                System.out.print("GAME OVER");
+                isEnded = true;
+            }
+        }
+    }
+
+
     /**
      * Paints the game image to the frame.
      */
@@ -148,9 +165,11 @@ public class GameMain extends JFrame {
         g2.setColor(new Color(255, 165, 79));
         g2.fillRect(0, 0, this.getWidth(), this.getHeight());
         g2.drawImage(player.getImage(), player.x, player.y, this);
+        player.draw(g);
 
         for(Ball b: balls){
             g2.drawImage(b.getImage(),b.x,b.y,this);
+            b.draw(g);
         }
         // TODO Draw power-ups
         g.setColor(Color.BLACK);
@@ -180,13 +199,20 @@ public class GameMain extends JFrame {
     private void run() {
         startTime = currentTimeMillis();
         long lastUpdateTime = nanoTime();
+        long pauseStart;
+        long pauseEnd;
         while (!isEnded) {
+
+            while (isPaused) {
+
+            }
 
             if (nanoTime() - lastUpdateTime >= framePeriod) {
                 lastUpdateTime = nanoTime();
                 for (Ball b : balls) {
                     b.move(getWidth(), getHeight());
                 }
+                checkCollision();
                 repaint();
 
             }
@@ -207,8 +233,13 @@ public class GameMain extends JFrame {
     }
 
 
-    public static void pause() {
+    public void pause() {
         // TODO go through all objects and set active -> true/false
+        if (isPaused == false) {
+            isPaused = true;
+        } else {
+            isPaused = false;
+        }
     }
 
 
@@ -218,6 +249,77 @@ public class GameMain extends JFrame {
      */
     public static void main(String[] args) {
         new GameMain();
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER) {
+            System.out.print("Pausey pausey");
+            pause();
+        }
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+
+
+    public class MyMouseAdapter extends MouseAdapter {
+        private int mouseX, mouseY;
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+//            System.out.print(e.getX()); System.out.print(e.getY());
+            if (player.collisionBox.contains(e.getX(), e.getY())) {
+                System.out.print("It's in!");
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+//            System.out.print(e.getX()); System.out.print(e.getY());
+            player.mouseDrag = true;
+            if (player.collisionBox.contains(e.getX(), e.getY())) {
+                System.out.print("It's in!");
+            }
+            mouseX = e.getX();
+            mouseY = e.getY();
+        }
+
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            int dx = e.getX() - player.x;
+            int dy = e.getY() - player.y;
+
+            if (player.collisionBox.getBounds2D().contains(player.x, player.y)) {
+                player.collisionBox.x += dx;
+                player.x += dy;
+                player.collisionBox.y += dy;
+                player.y += dy;
+            }
+            player.x += dx - 50;
+            player.y += dy - 50;
+        }
+
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            player.mouseDrag = false;
+        }
+
+
+        public void locationUpdate(MouseEvent e) {
+
+        }
 
     }
 }

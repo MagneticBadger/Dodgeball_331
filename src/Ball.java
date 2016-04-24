@@ -11,6 +11,7 @@ public class Ball {
     int radius;
     boolean active;
     private Image ballImage;
+    public Rectangle collisionBox;
 
     /**
      * Instantiates an opponent block.
@@ -60,9 +61,13 @@ public class Ball {
 
     /**
      * Draws the opponent block to the screen.
-     * @param g2
+     * @param
      */
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(Color.black);
+        collisionBox = new Rectangle(x, y, 33, 33);
+        g2.draw(collisionBox);
 
     }
     public Image getImage() {

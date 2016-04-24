@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 /**
  * Created on 20/04/2016.
@@ -11,6 +9,7 @@ public class Player {
     public boolean rotatingLeft, rotatingRight, hasPowerUp, mouseDrag=false;
     public int[] xPoints, yPoints;
     Rectangle collisionBox;
+    //    MyMouseAdapter mouse = new MyMouseAdapter();
     private Image playerImage;
 
 
@@ -24,8 +23,8 @@ public class Player {
 
         ImageIcon icon = new ImageIcon("team2-goalie.png");
         playerImage = icon.getImage();
-        x = 100;
-        y = 100;
+//        x = 100;
+//        y = 100;
 
         // x = ScreenHeight / 2
         // y = ScreenHeight / 2
@@ -56,7 +55,8 @@ public class Player {
 
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        collisionBox = new Rectangle(0, 0, 100, 100);
+        g2.setColor(Color.black);
+        collisionBox = new Rectangle(x + 25, y + 25, 50, 50);
         g2.draw(collisionBox);
 
     }
@@ -72,43 +72,7 @@ public class Player {
     }
 
 
-    public class MyMouseAdapter extends MouseAdapter {
-        private int mouseX, mouseY;
 
-        @Override
-        public void mousePressed(MouseEvent e) {
-            mouseX = e.getX();
-            mouseY = e.getY();
-        }
-
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            int dx = e.getX() - mouseX;
-            int dy = e.getY() - mouseY;
-
-            if (collisionBox.getBounds2D().contains(x, y)) {
-                collisionBox.x += dx;
-                collisionBox.y += dy;
-                x += dy;
-                y += dy;
-            }
-            x += dx;
-            y += dy;
-        }
-
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-        }
-
-
-        public void locationUpdate(MouseEvent e) {
-
-        }
-
-    }
 
 //    // KEY LISTENER METHODS BEGIN HERE
 //    /**
