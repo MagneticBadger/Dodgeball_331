@@ -20,12 +20,13 @@ public class GameMain extends JFrame implements KeyListener {
     private int  difficulty = 0, fps = 30;
     private double startTime, currentTime;
     private long gameEndTime, runTime;                // done in seconds for checking, minutes:seconds for leaderboard menu
-    private boolean isPaused, isEnded;
+    private boolean isPaused = true, isEnded;
     private final int OPP_RADIUS = 17;
     private static Player player;
     private ImageIcon backgroundII = new ImageIcon("basketball-court.jpeg");
-    private Image screenBuffer, backgroundImage = backgroundII.getImage();
-    private Graphics g;
+    private Image backgroundImage = backgroundII.getImage();
+    private BufferedImage screenBuffer;
+    private Graphics2D g2;
     ArrayList<Ball> balls = new ArrayList<Ball>();
     PowerUp[] powerUpArray;
 //    JPanel panel = new JPanel(new BorderLayout(), true);
@@ -36,19 +37,24 @@ public class GameMain extends JFrame implements KeyListener {
      * Initialize all variables for instance of the game.
      */
     public GameMain() {
-        setSize(600, 600);
+        setSize(1000, 750);
         setLocation(250, 250);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         player = new Player(getWidth()/2, getHeight()/2);
         addMouseListener(new MyMouseAdapter());
         addMouseMotionListener(new MyMouseAdapter());
         addKeyListener(this);
-        backgroundImage = backgroundImage.getScaledInstance(getHeight(), getWidth(), Image.SCALE_DEFAULT);
+        backgroundImage = backgroundImage.getScaledInstance(getWidth(), getHeight(), Image.SCALE_SMOOTH);
+
+
 
         // init power ups
 
         // set difficulty - handled in menu
         // if not, jdialog
+
+
+        // generates opponent balls based on difficulty level
         if(difficulty == 0) {
             generateOpponents(4);
         }
@@ -76,10 +82,9 @@ public class GameMain extends JFrame implements KeyListener {
      * @return
      */
     public void calculateTime() {
-        if(isPaused == false) {
-            double currentTime = (currentTimeMillis() - startTime)/1000;
-            this.currentTime = currentTime;
-        }
+        double currentTime = (currentTimeMillis() - startTime)/1000;
+        this.currentTime = currentTime;
+
     }
 
 
@@ -99,8 +104,8 @@ public class GameMain extends JFrame implements KeyListener {
         int minVelocity;
         int maxVelocity;
         if(difficulty == 0 | difficulty == 2){
-            minVelocity = 8;
-            maxVelocity = 20;
+            minVelocity = 4;
+            maxVelocity = 12;
         }
         else{
             minVelocity = 12;
@@ -108,42 +113,42 @@ public class GameMain extends JFrame implements KeyListener {
         }
 
         if (numberToAdd == 4) {
-            // Top left block
+            // Top left ball
             balls.add(new Ball(50 + OPP_RADIUS, 50 + OPP_RADIUS, OPP_RADIUS,
                     minVelocity + Math.random() * (maxVelocity - minVelocity), minVelocity + Math.random() * (maxVelocity - minVelocity)));
-            // top right block
+            // top right ball
             balls.add(new Ball(getWidth() - 50 - OPP_RADIUS, 50 + OPP_RADIUS, OPP_RADIUS,
                     -(minVelocity + Math.random() * (maxVelocity - minVelocity)), minVelocity + Math.random() * (maxVelocity - minVelocity)));
-            // bottom left
+            // bottom ball
             balls.add(new Ball(50 + OPP_RADIUS, getHeight() - 50 - OPP_RADIUS, OPP_RADIUS + 50,
                     minVelocity + Math.random() * (maxVelocity - minVelocity), -(minVelocity + Math.random() * (maxVelocity - minVelocity))));
-            // bottom right
+            // bottom ball
             balls.add(new Ball(getWidth() - OPP_RADIUS - 50, getHeight() - OPP_RADIUS - 50, OPP_RADIUS,
                     -(minVelocity + Math.random() * (maxVelocity - minVelocity)), -(minVelocity + Math.random() * (maxVelocity - minVelocity))));
 
         } else if(numberToAdd == 6) {
 
-            // Top left block
+            // Top left ball
             balls.add(new Ball(20 + OPP_RADIUS, 20 + OPP_RADIUS, OPP_RADIUS,
                     minVelocity + Math.random() * (maxVelocity - minVelocity), minVelocity + Math.random() * (maxVelocity - minVelocity)));
 
-            // top right block
+            // top right ball
             balls.add(new Ball(getWidth() - OPP_RADIUS, 20 + OPP_RADIUS, OPP_RADIUS,
                     -(minVelocity + Math.random() * (maxVelocity - minVelocity)), minVelocity + Math.random() * (maxVelocity - minVelocity)));
 
-            // bottom left
+            // bottom ball
             balls.add(new Ball(20, getHeight() - OPP_RADIUS, OPP_RADIUS + 20,
                     minVelocity + Math.random() * (maxVelocity - minVelocity), -(minVelocity + Math.random() * (maxVelocity - minVelocity))));
 
-            // bottom right
+            // bottom ball
             balls.add(new Ball(getWidth() - OPP_RADIUS - 20, getHeight() - OPP_RADIUS - 20, OPP_RADIUS,
                     -(minVelocity + Math.random() * (maxVelocity - minVelocity)), -(minVelocity + Math.random() * (maxVelocity - minVelocity))));
 
-            // Top Middle block
+            // Top Middle ball
             balls.add(new Ball(getWidth() / 2, OPP_RADIUS, OPP_RADIUS,
                     minVelocity + Math.random() * (maxVelocity - minVelocity), minVelocity + Math.random() * (maxVelocity - minVelocity)));
 
-            // bottom middle block
+            // bottom middle ball
             balls.add(new Ball(getWidth() / 2, getHeight() - OPP_RADIUS, OPP_RADIUS,
                     -(minVelocity + Math.random() * (maxVelocity - minVelocity)), (minVelocity + Math.random() * (maxVelocity - minVelocity))));
         }
@@ -155,10 +160,11 @@ public class GameMain extends JFrame implements KeyListener {
             if (b.collisionBox == null || player.collisionBox == null) {
                 continue;
             } else if (player.collisionBox.intersects(b.collisionBox)) {
-                System.out.print("GAME OVER");
+                System.out.println("GAME OVER");
                 isEnded = true;
             }
         }
+
     }
 
 
@@ -168,8 +174,8 @@ public class GameMain extends JFrame implements KeyListener {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(new Color(255, 165, 79));
-        g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+        //g2.setColor(new Color(255, 165, 79));
+        //g2.fillRect(0, 0, this.getWidth(), this.getHeight());
         g2.drawImage(backgroundImage, 0, 0, this);
         g2.drawImage(player.getImage(), player.x, player.y, this);
         player.draw(g);
@@ -183,8 +189,8 @@ public class GameMain extends JFrame implements KeyListener {
         g.setFont(new Font("TimesRoman", Font.BOLD, 50));
         g.drawString(Double.toString(currentTime), (getWidth()/2) - 50, 100);
 
-        BufferedImage bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-        g2.drawImage(bufferedImage, null, 0, 0);
+        screenBuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+        g2.drawImage(screenBuffer, null, 0, 0);
     }
 
 
@@ -200,53 +206,49 @@ public class GameMain extends JFrame implements KeyListener {
     //	/**
     //	 * Runs the game.
     //	 */
-    //	public void run() {
-    //
-    //	}
     private void run() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+
         startTime = currentTimeMillis();
         long lastUpdateTime = nanoTime();
-        long pauseStart;
-        long pauseEnd;
+
         while (!isEnded) {
 
-            while (isPaused) {
-
-            }
-
-            if (nanoTime() - lastUpdateTime >= framePeriod) {
-                lastUpdateTime = nanoTime();
-                for (Ball b : balls) {
-                    b.move(getWidth(), getHeight());
+                if (nanoTime() - lastUpdateTime >= framePeriod) {
+                    lastUpdateTime = nanoTime();
+                    for (Ball b : balls) {
+                        b.move(getWidth(), getHeight());
+                    }
+                    repaint();
+                    checkCollision();
                 }
-                repaint();
-                checkCollision();
-            }
 
-            calculateTime();
+                calculateTime();
 
-            try {
-                runTime = System.currentTimeMillis();
+                try {
+                    runTime = System.currentTimeMillis();
 
-              //prevents sleeping for a negative amount of time
-                if (fps - (runTime - startTime) > 0)
-                    Thread.sleep((long) fps - (long) (runTime - startTime));
+                    //prevents sleeping for a negative amount of time
+                    if (fps - (runTime - startTime) > 0)
+                        Thread.sleep((long) fps - (long) (runTime - startTime));
 
-            } catch (InterruptedException e) {
-            }
+                } catch (InterruptedException e) {
+                }
 
         }
     }
 
 
-    public void pause() {
-        // TODO go through all objects and set active -> true/false
-        if (isPaused == false) {
-            isPaused = true;
-        } else {
-            isPaused = false;
-        }
-    }
+//    public void pause() {
+//        // TODO go through all objects and set active -> true/false
+//        if (isPaused == false) {
+//            isPaused = true;
+//        } else {
+//            isPaused = false;
+//        }
+//    }
 
 
     /**
@@ -265,10 +267,6 @@ public class GameMain extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER) {
-            System.out.print("Pausey pausey");
-            pause();
-        }
 
     }
 
@@ -285,16 +283,18 @@ public class GameMain extends JFrame implements KeyListener {
         public void mouseClicked(MouseEvent e) {
 //            System.out.print(e.getX()); System.out.print(e.getY());
             if (player.collisionBox.contains(e.getX(), e.getY())) {
-                System.out.print("It's in!");
+                System.out.println("It's in!");
             }
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
 //            System.out.print(e.getX()); System.out.print(e.getY());
-            player.mouseDrag = true;
+
             if (player.collisionBox.contains(e.getX(), e.getY())) {
-                System.out.print("It's in!");
+                System.out.println("It's in!");
+                player.mouseDrag = true;
+                isPaused = false;
             }
             mouseX = e.getX();
             mouseY = e.getY();
@@ -306,14 +306,15 @@ public class GameMain extends JFrame implements KeyListener {
             int dx = e.getX() - player.x;
             int dy = e.getY() - player.y;
 
-            if (player.collisionBox.getBounds2D().contains(player.x, player.y)) {
+            if (player.mouseDrag) {
                 player.collisionBox.x += dx;
-                player.x += dy;
+                player.x += dx - 50;
                 player.collisionBox.y += dy;
-                player.y += dy;
+                player.y += dy - 50;
+                player.collisionBox = new Rectangle(player.x + 25, player.y + 25, 50, 50);
             }
-            player.x += dx - 50;
-            player.y += dy - 50;
+//            player.x += dx - 50;
+//            player.y += dy - 50;
         }
 
 
@@ -325,6 +326,14 @@ public class GameMain extends JFrame implements KeyListener {
 
         public void locationUpdate(MouseEvent e) {
 
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            if (player.mouseDrag){
+                System.out.println("Game Over");
+                isEnded = true;
+            }
         }
 
     }
