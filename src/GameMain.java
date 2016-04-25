@@ -23,7 +23,8 @@ public class GameMain extends JFrame implements KeyListener {
     private boolean isPaused, isEnded;
     private final int OPP_RADIUS = 17;
     private static Player player;
-    private Image screenBuffer;
+    private ImageIcon backgroundII = new ImageIcon("basketball-court.jpeg");
+    private Image screenBuffer, backgroundImage = backgroundII.getImage();
     private Graphics g;
     ArrayList<Ball> balls = new ArrayList<Ball>();
     PowerUp[] powerUpArray;
@@ -36,11 +37,13 @@ public class GameMain extends JFrame implements KeyListener {
      */
     public GameMain() {
         setSize(600, 600);
+        setLocation(250, 250);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         player = new Player(getWidth()/2, getHeight()/2);
         addMouseListener(new MyMouseAdapter());
         addMouseMotionListener(new MyMouseAdapter());
         addKeyListener(this);
+        backgroundImage = backgroundImage.getScaledInstance(getHeight(), getWidth(), Image.SCALE_DEFAULT);
 
         // init power ups
 
@@ -62,6 +65,7 @@ public class GameMain extends JFrame implements KeyListener {
         thread = new Thread();
         thread.start();
         setVisible(true);
+        repaint();
         run();
     }
 
@@ -148,7 +152,9 @@ public class GameMain extends JFrame implements KeyListener {
 
     public void checkCollision() {
         for (Ball b : balls) {
-            if (player.collisionBox.intersects(b.collisionBox)) {
+            if (b == null || player == null) {
+                continue;
+            } else if (player.collisionBox.intersects(b.collisionBox)) {
                 System.out.print("GAME OVER");
                 isEnded = true;
             }
@@ -164,6 +170,7 @@ public class GameMain extends JFrame implements KeyListener {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(new Color(255, 165, 79));
         g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g2.drawImage(backgroundImage, 0, 0, this);
         g2.drawImage(player.getImage(), player.x, player.y, this);
         player.draw(g);
 
