@@ -17,18 +17,19 @@ import static java.lang.System.nanoTime;
 public class GameMain extends JFrame implements KeyListener {
     Thread thread;
     private final long framePeriod = 1000000000 / 30;
-    private int  difficulty = 0, fps = 30;
+    public int difficulty = 0, fps = 30;
     private double startTime, currentTime;
     private long gameEndTime, runTime;                // done in seconds for checking, minutes:seconds for leaderboard menu
-    private boolean isPaused = true, isEnded;
+    private boolean isEnded, menu = true;
     private final int OPP_RADIUS = 17;
     private static Player player;
     private ImageIcon backgroundII = new ImageIcon("basketball-court.jpeg");
     private Image backgroundImage = backgroundII.getImage();
     private BufferedImage screenBuffer;
-    private Graphics2D g2;
+    private Graphics g;
     ArrayList<Ball> balls = new ArrayList<Ball>();
     PowerUp[] powerUpArray;
+
 //    JPanel panel = new JPanel(new BorderLayout(), true);
 
 
@@ -39,13 +40,16 @@ public class GameMain extends JFrame implements KeyListener {
     public GameMain() {
         setSize(1000, 750);
         setLocation(250, 250);
+        setTitle("Dodgeball");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setLayout(new FlowLayout());
         player = new Player(getWidth()/2, getHeight()/2);
         addMouseListener(new MyMouseAdapter());
         addMouseMotionListener(new MyMouseAdapter());
         addKeyListener(this);
         backgroundImage = backgroundImage.getScaledInstance(getWidth(), getHeight(), Image.SCALE_SMOOTH);
 
+        //frame.add(new GameOver());
 
 
         // init power ups
@@ -70,6 +74,7 @@ public class GameMain extends JFrame implements KeyListener {
 
         thread = new Thread();
         thread.start();
+
         setVisible(true);
         repaint();
         run();
@@ -104,12 +109,12 @@ public class GameMain extends JFrame implements KeyListener {
         int minVelocity;
         int maxVelocity;
         if(difficulty == 0 | difficulty == 2){
-            minVelocity = 4;
-            maxVelocity = 12;
+            minVelocity = 10;
+            maxVelocity = 20;
         }
         else{
-            minVelocity = 12;
-            maxVelocity = 30;
+            minVelocity = 15;
+            maxVelocity = 25;
         }
 
         if (numberToAdd == 4) {
@@ -215,7 +220,11 @@ public class GameMain extends JFrame implements KeyListener {
         long lastUpdateTime = nanoTime();
 
         while (!isEnded) {
-
+//            if(menu){
+//               while(menu){
+//
+//               }
+//            }
                 if (nanoTime() - lastUpdateTime >= framePeriod) {
                     lastUpdateTime = nanoTime();
                     for (Ball b : balls) {
@@ -294,7 +303,6 @@ public class GameMain extends JFrame implements KeyListener {
             if (player.collisionBox.contains(e.getX(), e.getY())) {
                 System.out.println("It's in!");
                 player.mouseDrag = true;
-                isPaused = false;
             }
             mouseX = e.getX();
             mouseY = e.getY();
