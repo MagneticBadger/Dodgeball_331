@@ -152,7 +152,7 @@ public class GameMain extends JFrame implements KeyListener {
 
     public void checkCollision() {
         for (Ball b : balls) {
-            if (b == null || player == null) {
+            if (b.collisionBox == null || player.collisionBox == null) {
                 continue;
             } else if (player.collisionBox.intersects(b.collisionBox)) {
                 System.out.print("GAME OVER");
