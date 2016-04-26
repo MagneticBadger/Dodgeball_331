@@ -13,9 +13,9 @@ import static java.lang.System.nanoTime;
 
 /**
  * Created by suggs on 20/04/2016.
+ * This class was worked on between the both of us.
  */
 public class GameMain extends JFrame implements KeyListener {
-    Thread thread;
     private final long framePeriod = 1000000000 / 30;
     public int difficulty = 0, fps = 30, width, height;
     private double startTime, currentTime;
@@ -32,12 +32,12 @@ public class GameMain extends JFrame implements KeyListener {
     ArrayList<Ball> balls = new ArrayList<Ball>();
     PowerUp[] powerUpArray;
 
-//    JPanel panel = new JPanel(new BorderLayout(), true);
 
 
 
     /**
      * Initialize all variables for instance of the game.
+     * Worked together on this
      */
     public GameMain() {
         setSize(1000, 750);
@@ -48,17 +48,24 @@ public class GameMain extends JFrame implements KeyListener {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
+        JFrame difficultyFrame = new JFrame();
+        difficultyFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        Object[] options = {"Easy", "Medium", "Hard", "Coding games in java"};
+        int n = JOptionPane.showOptionDialog(difficultyFrame,
+                "Please select your difficulty: ",
+                "DIFFICULTY PLZ",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+
+        difficulty = n;
         player = new Player(getWidth()/2, getHeight()/2);
         addMouseListener(new MyMouseAdapter());
         addMouseMotionListener(new MyMouseAdapter());
         addKeyListener(this);
         backgroundImage = backgroundImage.getScaledInstance(getWidth(), getHeight(), Image.SCALE_SMOOTH);
-
-
-        // init power ups
-
-        // set difficulty - handled in menu
-        // if not, jdialog
 
 
         // generates opponent balls based on difficulty level
@@ -75,49 +82,17 @@ public class GameMain extends JFrame implements KeyListener {
             generateOpponents(6);
         }
 
-        thread = new Thread();
-        thread.start();
-
         setVisible(true);
         repaint();
         run();
     }
 
 
-//    public void restart() {
-//        System.out.print("Restarty");
-//        removeAll();
-//        revalidate();
-//        isEnded = false;
-//        player = new Player(getWidth()/2, getHeight()/2);
-////        addMouseListener(new MyMouseAdapter());
-////        addMouseMotionListener(new MyMouseAdapter());
-////        addKeyListener(this);
-//
-//        balls.clear();
-//
-//        // generates opponent balls based on difficulty level
-//        if(difficulty == 0) {
-//            generateOpponents(4);
-//        }
-//        else if(difficulty == 1){
-//            generateOpponents(4);
-//        }
-//        else if(difficulty == 2){
-//            generateOpponents(6);
-//        }
-//        else if(difficulty == 3){
-//            generateOpponents(6);
-//        }
-//        repaint();
-//        run();
-//
-//    }
-
 
     /**
      * Calculates the current running time of the program by negating the start time
      * from the current time.
+     * Written by Todd Shaughnessy
      * @return
      */
     public void calculateTime() {
@@ -131,6 +106,7 @@ public class GameMain extends JFrame implements KeyListener {
     /**
      * Instantiates an opponent block to an initial starting location that is passed in via
      * the oppX and oppY fields.
+     * Written by Todd Shaughnessy
      * @param numberToAdd
      */
     private void generateOpponents(int numberToAdd) {
@@ -187,7 +163,9 @@ public class GameMain extends JFrame implements KeyListener {
         }
     }
 
-
+    /**
+     * Written by Michael Suggs
+     */
     public void checkCollision() {
         for (Ball b : balls) {
             if (b.collisionBox == null || player.collisionBox == null) {
@@ -202,6 +180,7 @@ public class GameMain extends JFrame implements KeyListener {
 
     /**
      * Paints the game image to the frame.
+     * Worked on this together
      */
     @Override
     public void paint(Graphics g) {
@@ -237,6 +216,7 @@ public class GameMain extends JFrame implements KeyListener {
 
     //	/**
     //	 * Runs the game.
+    //   * Worked on this together
     //	 */
     private void run() {
         try {
@@ -303,8 +283,9 @@ public class GameMain extends JFrame implements KeyListener {
         public void mouseClicked(MouseEvent e) {
 //            System.out.print(e.getX()); System.out.print(e.getY());
             if (restartBox.contains(e.getX(), e.getY())) {
-                System.out.print("Clicky");
-//                restart();
+                dispose();
+                System.gc();
+                new GameMain();
             }
         }
 

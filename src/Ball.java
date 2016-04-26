@@ -15,6 +15,7 @@ public class Ball {
 
     /**
      * Instantiates an opponent block.
+     * Written by Todd Shaughnessy
      */
     public Ball(int x, int y, int radius, double xVel, double yVel) {
         this.x = x;
@@ -32,6 +33,7 @@ public class Ball {
 
     /**
      * Given the screen width and height, determines how and where to move the block next.
+     * Written by Todd Shaughnessy
      * @param width of the screen
      * @param height of the screen
      */
@@ -52,15 +54,8 @@ public class Ball {
 
 
     /**
-     * Determines if the block has collided with the player - if so, the game ends.
-     * @param player passes the PlayerBlock class representing the current player.
-     */
-    public void ballCollision(Player player) {
-
-    }
-
-    /**
      * Draws the opponent block to the screen.
+     * Written by Todd Shaughnessy
      * @param
      */
     public void draw(Graphics g) {
