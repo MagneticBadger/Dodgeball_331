@@ -4,27 +4,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-public class GameMenu {
+public class GameMenu extends JFrame {
     static JPanel centrePanel;
-    static JFrame frame;
-    JButton playButton, leaderboardButton, exitButton;
+    //    static JFrame frame;
+    public int width, height;
 
     public GameMenu() {
-        frame = new JFrame();
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setSize(1000, 750);
-        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+//        frame = new JFrame();
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setSize(1000, 750);
+        width = getWidth();
+        height = getHeight();
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         centrePanel = new MainMenu();
         centrePanel.repaint();
-        playButton = new JButton("PLAY");
-        playButton.addActionListener(new MyActionListener());
-        leaderboardButton = new JButton("LEADERBOARD");
-        exitButton = new JButton("EXIT");
-        centrePanel.add(playButton);
-        centrePanel.add(leaderboardButton);
-        centrePanel.add(exitButton);
-        frame.add("Center", centrePanel);
-        frame.setVisible(true);
+        add("Center", centrePanel);
+        setVisible(true);
 
     }
 
@@ -35,9 +30,17 @@ public class GameMenu {
     class MainMenu extends JPanel {
         private ImageIcon menuII = new ImageIcon("basketball-court2.jpeg");
         private Image menuBackground = menuII.getImage();
+        JButton playButton, leaderboardButton, exitButton;
 
         public MainMenu() {
-            menuBackground = menuBackground.getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_SMOOTH);
+            menuBackground = menuBackground.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            playButton = new JButton("PLAY");
+            playButton.addActionListener(new MyActionListener());
+            leaderboardButton = new JButton("LEADERBOARD");
+            exitButton = new JButton("EXIT");
+            add(playButton);
+            add(leaderboardButton);
+            add(exitButton);
         }
 
         @Override
@@ -73,8 +76,9 @@ public class GameMenu {
             String label = e.getActionCommand();
 
             if (label == "PLAY") {
-                frame.dispose();
-                GameMain dogeball = new GameMain();
+//                frame.dispose();
+                String[] args = new String[]{"123"};
+                GameMain.main(args);
             }
         }
     }
