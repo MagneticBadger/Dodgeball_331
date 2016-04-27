@@ -11,9 +11,12 @@ public class Player {
     public int[] xPoints, yPoints;
     Rectangle collisionBox;
     //    MyMouseAdapter mouse = new MyMouseAdapter();
-    private Image playerImage;
+    public Image playerImage;
+    public String mode;
+    public int lives;
+    public double hulkStart;
 
-
+    ;
     /**
      * Create the Player the player moves - determines where to redraw the shape based on the
      * velocity and the current points.
@@ -25,6 +28,8 @@ public class Player {
 
         ImageIcon icon = new ImageIcon("team2-goalie.png");
         playerImage = icon.getImage();
+        mode = "HOCKEY";
+        lives = 1;
 //        x = 100;
 //        y = 100;
 
@@ -39,15 +44,15 @@ public class Player {
      *
      * @return true if the player has a power-up - false otherwise.
      */
-    private boolean hasPowerUp() {
-        return hasPowerUp;
+    public void hulkMode() {
+        mode = "HULK";
     }
 
 
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.black);
-        collisionBox = new Rectangle(x + 25, y + 25, 50, 50);
+        collisionBox = new Rectangle(x + 33, y + 33, 33, 33);
         g2.draw(collisionBox);
 
     }

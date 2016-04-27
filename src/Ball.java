@@ -1,5 +1,10 @@
 import javax.swing.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.*;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by suggs on 20/04/2016.
@@ -9,9 +14,10 @@ public class Ball {
     public double bouncingTime;
     private double xVel, yVel;
     int radius;
-    boolean active;
-    private Image ballImage;
+    boolean active, beenTurned;
+    public Image ballImage;
     public Rectangle collisionBox;
+    AudioClip bounce;
 
     /**
      * Instantiates an opponent block.
@@ -26,6 +32,8 @@ public class Ball {
         active = false;
         ImageIcon icon = new ImageIcon("dodgeball-sprite.png");
         ballImage = icon.getImage();
+        beenTurned = false;
+        bounce = getAudioClip("BOUNCE.WAV");
 
     }
 
@@ -44,12 +52,19 @@ public class Ball {
 
         if (x < 1 | x > width) {
             xVel = xVel * -1;
+            bounce.play();
         }
         if (y < 1 | y > height) {
             yVel = yVel * -1;
+            bounce.play();
         }
 
 
+    }
+
+
+    public void removeRectangle(Graphics g) {
+        g.clearRect(collisionBox.x, collisionBox.y, collisionBox.width, collisionBox.height);
     }
 
 
@@ -67,5 +82,19 @@ public class Ball {
     }
     public Image getImage() {
         return ballImage;
+    }
+
+    public AudioClip getAudioClip(String filename) {
+        URL url = null;
+        try {
+            File file = new File(filename);
+            if (file.canRead())
+                url = file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        if (url == null)
+            throw new RuntimeException("audio " + filename + " not found");
+        return Applet.newAudioClip(url);
     }
 }
